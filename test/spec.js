@@ -36,7 +36,15 @@ describe('@frankdejonge/endpoint', function () {
                 expect(sut.pattern('name')).to.equal('/segment/:param');
             });
 
-            it('should give information about an endpoint', function () {
+            it('should give details about an endpoint', function () {
+                expect(sut.details('name', {param: 'replaced'})).to.eql({
+                    method: httpMethod,
+                    pattern: '/segment/:param',
+                    name: 'name'
+                });
+            });
+
+            it('should give resolve information about an endpoint', function () {
                 expect(sut.resolve('name', {param: 'replaced'})).to.eql({
                     method: httpMethod,
                     pattern: '/segment/:param',
