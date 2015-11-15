@@ -1,4 +1,4 @@
-var assign = require('object-assign');
+"use strict";
 
 function resolveParameters(pattern, parameters) {
     return pattern.replace(/(?![\/|^]):([a-zA-z0-9_-]+)/g, function (match, contents) {
@@ -12,34 +12,6 @@ function resolveParameters(pattern, parameters) {
 function prefixPattern(base, pattern) {
     return [base.replace(/\/$/, ''), pattern.replace(/^\//, '')].join('/');
 }
-
-var acceptors = {
-    get: function (pattern, name, cb) {
-        this.register('GET', pattern, name, cb);
-    },
-    post: function (pattern, name, cb) {
-        this.register('POST', pattern, name, cb);
-    },
-    patch: function (pattern, name, cb) {
-        this.register('PATCH', pattern, name, cb);
-    },
-    put: function (pattern, name, cb) {
-        this.register('PUT', pattern, name, cb);
-    },
-    delete: function (pattern, name, cb) {
-        this.register('DELETE', pattern, name, cb);
-    },
-    options: function (pattern, name, cb) {
-        this.register('OPTIONS', pattern, name, cb);
-    },
-    head: function (pattern, name, cb) {
-        this.register('HEAD', pattern, name, cb);
-    },
-    nest: function (prefix, cb) {
-        var proxy = new EndpointProxy(this, prefix);
-        cb(proxy);
-    }
-};
 
 function Endpoint (root) {
     this.root = root;
@@ -65,6 +37,34 @@ Endpoint.prototype._inspect = function(name) {
     return this.endpoints[name];
 };
 
+Endpoint.prototype.nest = function (prefix, cb) {
+    var root = this.root;
+    this.root = prefixPattern(this.root, prefix);
+
+    try {
+        cb(this);
+    } catch (e) {
+        this.root = root;
+        throw e;
+    }
+
+    this.root = root;
+};
+
+function methodCall (method) {
+    return function (pattern, name, cb) {
+        this.register(method, pattern, name, cb);
+    }
+}
+
+Endpoint.prototype.get = methodCall('GET');
+Endpoint.prototype.put = methodCall('PUT');
+Endpoint.prototype.post = methodCall('POST');
+Endpoint.prototype.patch = methodCall('PATCH');
+Endpoint.prototype.options = methodCall('OPTIONS');
+Endpoint.prototype.head = methodCall('HEAD');
+Endpoint.prototype.delete = methodCall('DELETE');
+
 Endpoint.prototype.resolve = function (name, parameters) {
     return resolveParameters(this.pattern(name), parameters || {});
 };
@@ -76,18 +76,5 @@ Endpoint.prototype.method = function (name) {
 Endpoint.prototype.pattern = function (name) {
     return this._inspect(name).pattern;
 };
-
-assign(Endpoint.prototype, acceptors);
-
-function EndpointProxy (acceptor, root) {
-    this.acceptor = acceptor;
-    this.root = root;
-}
-
-EndpointProxy.prototype.register = function (method, pattern, name, cb) {
-    this.acceptor.register(method, prefixPattern(this.root, pattern), name, cb);
-};
-
-assign(EndpointProxy.prototype, acceptors);
 
 module.exports = Endpoint;

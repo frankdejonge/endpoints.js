@@ -40,16 +40,16 @@ describe('@frankdejonge/endpoint', function () {
 
     describe ('when there are nested routes defined', function () {
         beforeEach(function () {
-            sut.nest('nested', function (endpoints) {
-                endpoints.get('endpoint', 'via.nest');
+            sut.nest('nested', function () {
+                sut.get('endpoint', 'via.nest');
             });
 
-            sut.get('get', 'get.index', function (endpoints) {
-                endpoints.get('nested', 'via.callback');
+            sut.get('get', 'get.index', function () {
+                sut.get('nested', 'via.callback');
             });
         });
 
-        it ('should resolve nested endpoints', function () {
+        it ('should resolve nested sut', function () {
             expect(sut.resolve('via.nest')).to.equal('/nested/endpoint');
             expect(sut.resolve('via.callback')).to.equal('/get/nested');
         });
@@ -69,6 +69,16 @@ describe('@frankdejonge/endpoint', function () {
         it ('should error when parameters are not supplied for resolving', function () {
             expect(function () {
                 sut.resolve('param.endpoint');
+            }).to.throwError();
+        });
+    });
+
+    describe('when there is an error during nested endpoint registration', function () {
+        it ('should let the error bubble up', function () {
+            expect(function () {
+                sut.nest('prefix', function () {
+                    throw new Error();
+                });
             }).to.throwError();
         });
     });
