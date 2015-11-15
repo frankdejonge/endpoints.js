@@ -1,5 +1,11 @@
 # @frankdejonge/endpoint - UNPUBLISHED
 
+## Scenario
+
+This package allows you to register and resolve endpoints. Endpoints can be internal,
+for example to allow named routing in react-router, or create a lookup table for any API
+endpoints your application may consume. It's merely a lookup table tailored towards endpoints.
+
 ## Install
 
 ```js
