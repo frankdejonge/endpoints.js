@@ -5,8 +5,7 @@
   "repository": "http://github.com/frankdejonge/endpoint.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
-    "coverage": "istanbul cover _mocha"
+    "test": "istanbul cover _mocha"
   },
   "author": "Frank de Jonge <info@frankdejonge.nl>",
   "license": "MIT",
