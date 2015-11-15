@@ -1,7 +1,7 @@
 {
   "name": "@frankdejonge/endpoint",
   "version": "1.0.0",
-  "description": "(named) URI generator",
+  "description": "Endpoint reference.",
   "repository": "http://github.com/frankdejonge/endpoint.js",
   "main": "index.js",
   "scripts": {
