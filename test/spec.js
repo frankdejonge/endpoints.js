@@ -2,7 +2,7 @@ var endpoint = require('..');
 var expect = require('expect.js');
 var sut;
 
-describe('Endpoint Generator', function () {
+describe('@frankdejonge/endpoint', function () {
     beforeEach(function () {
        sut = new endpoint('/');
     });
