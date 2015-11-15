@@ -31,9 +31,9 @@ Endpoint.prototype.register = function (method, pattern, name, cb) {
     };
 };
 
-Endpoint.prototype._inspect = function(name) {
+Endpoint.prototype._inspect = function (name) {
     if (this.endpoints.hasOwnProperty(name) === false) {
-        throw new Error('Could not get URI named: ' + name);
+        throw new Error('Could not find endpoint named: ' + name);
     }
 
     return this.endpoints[name];
@@ -71,15 +71,21 @@ Endpoint.prototype.path = function (name, parameters) {
     return resolveParameters(this.pattern(name), parameters);
 };
 
-Endpoint.prototype.resolve = function (name, parameters) {
+Endpoint.prototype.details = function (name) {
     var endpoint = this._inspect(name);
 
     return {
         name: name,
-        path: resolveParameters(endpoint.pattern, parameters),
         pattern: endpoint.pattern,
         method: endpoint.method
     };
+}
+
+Endpoint.prototype.resolve = function (name, parameters) {
+    var details = this.details(name);
+    details.path = resolveParameters(details.pattern, parameters);
+
+    return details;
 };
 
 Endpoint.prototype.method = function (name) {
