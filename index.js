@@ -1,6 +1,8 @@
 "use strict";
 
 function resolveParameters(pattern, parameters) {
+    parameters = parameters || {};
+
     return pattern.replace(/(?![\/|^]):([a-zA-z0-9_-]+)/g, function (match, contents) {
         if (parameters.hasOwnProperty(contents) === false) {
             throw new Error('Could not resolve parameter "' + match + '"');
@@ -65,8 +67,19 @@ Endpoint.prototype.options = methodCall('OPTIONS');
 Endpoint.prototype.head = methodCall('HEAD');
 Endpoint.prototype.delete = methodCall('DELETE');
 
+Endpoint.prototype.path = function (name, parameters) {
+    return resolveParameters(this.pattern(name), parameters);
+};
+
 Endpoint.prototype.resolve = function (name, parameters) {
-    return resolveParameters(this.pattern(name), parameters || {});
+    var endpoint = this._inspect(name);
+
+    return {
+        name: name,
+        path: resolveParameters(endpoint.pattern, parameters),
+        pattern: endpoint.pattern,
+        method: endpoint.method
+    };
 };
 
 Endpoint.prototype.method = function (name) {

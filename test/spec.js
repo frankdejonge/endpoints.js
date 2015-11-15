@@ -25,7 +25,7 @@ describe('@frankdejonge/endpoint', function () {
             });
 
             it('should resolve a url', function () {
-                expect(sut.resolve('name', {param: 'replaced'})).to.equal('/segment/replaced');
+                expect(sut.path('name', {param: 'replaced'})).to.equal('/segment/replaced');
             });
 
             it('should know which method the endpoint has', function () {
@@ -34,6 +34,15 @@ describe('@frankdejonge/endpoint', function () {
 
             it('should expose the endpoint\'s pattern', function () {
                 expect(sut.pattern('name')).to.equal('/segment/:param');
+            });
+
+            it('should give information about an endpoint', function () {
+                expect(sut.resolve('name', {param: 'replaced'})).to.eql({
+                    method: httpMethod,
+                    pattern: '/segment/:param',
+                    name: 'name',
+                    path: '/segment/replaced'
+                });
             });
         });
     });
@@ -49,15 +58,15 @@ describe('@frankdejonge/endpoint', function () {
             });
         });
 
-        it ('should resolve nested sut', function () {
-            expect(sut.resolve('via.nest')).to.equal('/nested/endpoint');
-            expect(sut.resolve('via.callback')).to.equal('/get/nested');
+        it ('should resolve nested endpoint paths', function () {
+            expect(sut.path('via.nest')).to.equal('/nested/endpoint');
+            expect(sut.path('via.callback')).to.equal('/get/nested');
         });
     });
 
-    it ('should error when resolving an unknown endpoint', function () {
+    it ('should error when resolving an unknown endpoint path', function () {
         expect(function () {
-            sut.resolve('unknown.endpoint');
+            sut.path('unknown.endpoint');
         }).to.throwError();
     });
 
@@ -66,9 +75,9 @@ describe('@frankdejonge/endpoint', function () {
             sut.get('/:param', 'param.endpoint');
         });
 
-        it ('should error when parameters are not supplied for resolving', function () {
+        it ('should error when path parameters are not supplied', function () {
             expect(function () {
-                sut.resolve('param.endpoint');
+                sut.path('param.endpoint');
             }).to.throwError();
         });
     });
