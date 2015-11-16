@@ -1,8 +1,8 @@
 {
-  "name": "@frankdejonge/endpoint",
+  "name": "@frankdejonge/endpoints",
   "version": "0.1.0",
   "description": "Endpoint reference.",
-  "repository": "http://github.com/frankdejonge/endpoint.js",
+  "repository": "http://github.com/frankdejonge/endpoints.js",
   "main": "index.js",
   "scripts": {
     "test": "istanbul cover _mocha"

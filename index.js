@@ -15,12 +15,12 @@ function prefixPattern(base, pattern) {
     return [base.replace(/\/$/, ''), pattern.replace(/^\//, '')].join('/');
 }
 
-function Endpoint (root) {
+function Endpoints (root) {
     this.root = root;
     this.endpoints = {};
 }
 
-Endpoint.prototype.register = function (method, pattern, name, cb) {
+Endpoints.prototype.register = function (method, pattern, name, cb) {
     if (cb !== undefined) {
         this.nest(pattern, cb);
     }
@@ -31,7 +31,7 @@ Endpoint.prototype.register = function (method, pattern, name, cb) {
     };
 };
 
-Endpoint.prototype._inspect = function (name) {
+Endpoints.prototype._inspect = function (name) {
     if (this.endpoints.hasOwnProperty(name) === false) {
         throw new Error('Could not find endpoint named: ' + name);
     }
@@ -39,7 +39,7 @@ Endpoint.prototype._inspect = function (name) {
     return this.endpoints[name];
 };
 
-Endpoint.prototype.nest = function (prefix, cb) {
+Endpoints.prototype.nest = function (prefix, cb) {
     var root = this.root;
     this.root = prefixPattern(this.root, prefix);
 
@@ -59,19 +59,19 @@ function methodCall (method) {
     }
 }
 
-Endpoint.prototype.get = methodCall('GET');
-Endpoint.prototype.put = methodCall('PUT');
-Endpoint.prototype.post = methodCall('POST');
-Endpoint.prototype.patch = methodCall('PATCH');
-Endpoint.prototype.options = methodCall('OPTIONS');
-Endpoint.prototype.head = methodCall('HEAD');
-Endpoint.prototype.delete = methodCall('DELETE');
+Endpoints.prototype.get = methodCall('GET');
+Endpoints.prototype.put = methodCall('PUT');
+Endpoints.prototype.post = methodCall('POST');
+Endpoints.prototype.patch = methodCall('PATCH');
+Endpoints.prototype.options = methodCall('OPTIONS');
+Endpoints.prototype.head = methodCall('HEAD');
+Endpoints.prototype.delete = methodCall('DELETE');
 
-Endpoint.prototype.path = function (name, parameters) {
+Endpoints.prototype.path = function (name, parameters) {
     return resolveParameters(this.pattern(name), parameters);
 };
 
-Endpoint.prototype.details = function (name) {
+Endpoints.prototype.details = function (name) {
     var endpoint = this._inspect(name);
 
     return {
@@ -81,19 +81,19 @@ Endpoint.prototype.details = function (name) {
     };
 }
 
-Endpoint.prototype.resolve = function (name, parameters) {
+Endpoints.prototype.resolve = function (name, parameters) {
     var details = this.details(name);
     details.path = resolveParameters(details.pattern, parameters);
 
     return details;
 };
 
-Endpoint.prototype.method = function (name) {
+Endpoints.prototype.method = function (name) {
     return this._inspect(name).method;
 };
 
-Endpoint.prototype.pattern = function (name) {
+Endpoints.prototype.pattern = function (name) {
     return this._inspect(name).pattern;
 };
 
-module.exports = Endpoint;
+module.exports = Endpoints;

@@ -1,10 +1,10 @@
-var endpoint = require('..');
+var Endpoints = require('..');
 var expect = require('expect.js');
 var sut;
 
-describe('@frankdejonge/endpoint', function () {
+describe('@frankdejonge/endpoints', function () {
     beforeEach(function () {
-       sut = new endpoint('/');
+       sut = new Endpoints('/');
     });
 
     var cases = [
