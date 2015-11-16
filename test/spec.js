@@ -36,8 +36,8 @@ describe('@frankdejonge/endpoints', function () {
                 expect(sut.pattern('name')).to.equal('/segment/:param');
             });
 
-            it('should give details about an endpoint', function () {
-                expect(sut.details('name', {param: 'replaced'})).to.eql({
+            it('should expose the blueprint for an endpoint', function () {
+                expect(sut.blueprint('name', {param: 'replaced'})).to.eql({
                     method: httpMethod,
                     pattern: '/segment/:param',
                     name: 'name'

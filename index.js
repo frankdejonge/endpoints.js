@@ -15,6 +15,14 @@ function prefixPattern(base, pattern) {
     return [base.replace(/\/$/, ''), pattern.replace(/^\//, '')].join('/');
 }
 
+function getEndpoint(collection, name) {
+    if (collection.endpoints.hasOwnProperty(name) === false) {
+        throw new Error('Could not find endpoint named: ' + name);
+    }
+
+    return collection.endpoints[name];
+}
+
 function Endpoints (root) {
     this.root = root;
     this.endpoints = {};
@@ -29,14 +37,6 @@ Endpoints.prototype.register = function (method, pattern, name, cb) {
         method: method,
         pattern: prefixPattern(this.root, pattern)
     };
-};
-
-Endpoints.prototype._inspect = function (name) {
-    if (this.endpoints.hasOwnProperty(name) === false) {
-        throw new Error('Could not find endpoint named: ' + name);
-    }
-
-    return this.endpoints[name];
 };
 
 Endpoints.prototype.nest = function (prefix, cb) {
@@ -71,8 +71,8 @@ Endpoints.prototype.path = function (name, parameters) {
     return resolveParameters(this.pattern(name), parameters);
 };
 
-Endpoints.prototype.details = function (name) {
-    var endpoint = this._inspect(name);
+Endpoints.prototype.blueprint = function (name) {
+    var endpoint = getEndpoint(this, name);
 
     return {
         name: name,
@@ -82,18 +82,18 @@ Endpoints.prototype.details = function (name) {
 }
 
 Endpoints.prototype.resolve = function (name, parameters) {
-    var details = this.details(name);
+    var details = this.blueprint(name);
     details.path = resolveParameters(details.pattern, parameters);
 
     return details;
 };
 
 Endpoints.prototype.method = function (name) {
-    return this._inspect(name).method;
+    return getEndpoint(this, name).method;
 };
 
 Endpoints.prototype.pattern = function (name) {
-    return this._inspect(name).pattern;
+    return getEndpoint(this, name).pattern;
 };
 
 module.exports = Endpoints;

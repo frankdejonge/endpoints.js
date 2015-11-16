@@ -1,4 +1,4 @@
-# @frankdejonge/endpoint - UNPUBLISHED
+# @frankdejonge/endpoints - UNPUBLISHED
 
 ## Scenario
 
@@ -9,37 +9,38 @@ endpoints your application may consume. It's merely a lookup table tailored towa
 ## Install
 
 ```js
-npm i --save @frankdejonge/endpoint
+npm i --save @frankdejonge/endpoints
 ```
 
 ## Usage
 
 ```js
-var Endpoint = require('@frankdejonge/endpoint');
-var endpoint = new Endpoint('http://api.example.org');
+var Endpoint = require('@frankdejonge/endpoints');
+var endpoint = new Endpoints('http://api.example.org');
 
 // Simple declaration
-endpoint.get('/articles', 'articles.index');
-console.log(endpoint.resolve('article.index')); // http://api.example.org/articles
+endpoints.get('/articles', 'articles.index');
+console.log(endpoints.path('article.index')); // http://api.example.org/articles
 
 // Nested
-endpoint.get('/writers', 'writer.index', function () {
-    endpoint.post('/', 'writer.create');
-    endpoint.get('/:writerId', 'writer.details', function () {
-        endpoint.get('/publications', 'writer.publications');
+endpoints.get('/writers', 'writer.index', function () {
+    endpoints.post('/', 'writer.create');
+    sendpoint.get('/:writerId', 'writer.details', function () {
+        endpoints.get('/publications', 'writer.publications');
     });
-    endpoint.delete('/:writerId', 'writer.delete');
+    endpoints.delete('/:writerId', 'writer.delete');
 });
 
-console.log(endpoint.resolve('writers.publications', {writerId: 2}));
+console.log(endpoints.path('writers.publications', {writerId: 2}));
 // http://api.example.org/writers/2/publications
 ```
 
-Nesting can also be done through the `endpoint.nest` method which doesn't register an
+Nesting can also be done through the `endpoints.nest` method which doesn't register an
 endpoint for the group.
 
 ```js
-endpoint.nest('prefix', function () {
+endpoints.nest('prefix', function () {
     // Register endpoints here.
 });
 ```
+
