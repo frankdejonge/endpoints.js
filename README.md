@@ -22,15 +22,25 @@ var endpoint = new Endpoints('http://api.example.org');
 endpoints.get('/articles', 'articles.index');
 console.log(endpoints.path('article.index')); // http://api.example.org/articles
 
-// Nested
+// Available method by http verb
+endpoints.get(pattern, name);
+endpoints.post(pattern, name);
+endpoints.put(pattern, name);
+endpoints.patch(pattern, name);
+endpoints.delete(pattern, name);
+endpoints.options(pattern, name);
+endpoints.head(pattern, name);
+
+// Nested declaration via a callback.
 endpoints.get('/writers', 'writer.index', function () {
     endpoints.post('/', 'writer.create');
-    sendpoint.get('/:writerId', 'writer.details', function () {
+    endpoint.get('/:writerId', 'writer.details', function () {
         endpoints.get('/publications', 'writer.publications');
     });
     endpoints.delete('/:writerId', 'writer.delete');
 });
 
+// Resolving endpoint paths with parameters
 console.log(endpoints.path('writers.publications', {writerId: 2}));
 // http://api.example.org/writers/2/publications
 ```
@@ -44,3 +54,24 @@ endpoints.nest('prefix', function () {
 });
 ```
 
+## Endpoint blueprints.
+
+```js
+endpoints.get('/article/:id', 'article.details');
+var blueprint = endpoints.blueprint('article.details');
+var httpMethod = blueprint.method;
+var pattern = blueprint.pattern;
+```
+
+## Resolving endpoints.
+
+Apart from blueprints you can `resolve` an endpoint to get the blueprint with
+the generated path.
+
+```js
+endpoints.get('/article/:id', 'article.details');
+var articleEndpoint = endpoints.resolve('article.details');
+var httpMethod = articleEndpoint.method;
+var pattern = articleEndpoint.pattern;
+var path = articleEndpoint.path;
+```
