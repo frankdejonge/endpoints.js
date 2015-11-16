@@ -15,8 +15,8 @@ npm i --save @frankdejonge/endpoints
 ## Usage
 
 ```js
-var Endpoint = require('@frankdejonge/endpoints');
-var endpoint = new Endpoints('http://api.example.org');
+var Endpoints = require('@frankdejonge/endpoints');
+var endpoints = new Endpoints('http://api.example.org');
 
 // Simple declaration
 endpoints.get('/articles', 'articles.index');
