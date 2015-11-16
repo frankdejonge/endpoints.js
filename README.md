@@ -1,4 +1,4 @@
-# @frankdejonge/endpoints - UNPUBLISHED
+# @frankdejonge/endpoints
 
 ## Scenario
 
