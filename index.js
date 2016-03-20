@@ -1,5 +1,7 @@
 "use strict";
 
+var assign = require('object-assign');
+
 function resolveParameters(pattern, parameters) {
     parameters = parameters || {};
 
@@ -94,10 +96,10 @@ Endpoints.prototype.blueprint = function (name) {
 
 Endpoints.prototype.resolve = function (name, parameters) {
     var route = this.blueprint(name);
-    console.log(Object.assign({}, route.defaults, parameters));
-    var path = resolveParameters(route.pattern, Object.assign({}, route.defaults, parameters));
+    console.log(assign({}, route.defaults, parameters));
+    var path = resolveParameters(route.pattern, assign({}, route.defaults, parameters));
 
-    return Object.assign({}, route, {path: path});
+    return assign({}, route, {path: path});
 };
 
 Endpoints.prototype.method = function (name) {
