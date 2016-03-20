@@ -24,7 +24,7 @@ function getEndpoint(collection, name) {
 
 function determineCallback() {
     return Array.prototype.slice.apply(arguments)
-        .filter(function (candidate) { return (typeof candidate) = 'function'; })
+        .filter(function (candidate) { return typeof candidate == 'function'; })
         .shift();
 }
 
