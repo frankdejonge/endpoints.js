@@ -3,7 +3,7 @@
 function resolveParameters(pattern, parameters) {
     parameters = parameters || {};
 
-    return pattern.replace(/(?![\/|^]):([a-zA-z0-9_-]+)/g, function (match, contents) {
+    return pattern.replace(/:([a-zA-z0-9_-]+)/g, function (match, contents) {
         if (parameters.hasOwnProperty(contents) === false) {
             throw new Error('Could not resolve parameter "' + match + '"');
         }
@@ -19,23 +19,34 @@ function getEndpoint(collection, name) {
     if (collection.endpoints.hasOwnProperty(name) === false) {
         throw new Error('Could not find endpoint named: ' + name);
     }
-
     return collection.endpoints[name];
+}
+
+function determineCallback() {
+    return Array.prototype.slice.apply(arguments)
+        .filter(function (candidate) { return (typeof candidate) = 'function'; })
+        .shift();
 }
 
 function Endpoints (root) {
     this.root = root;
-    this.endpoints = {};
 }
 
-Endpoints.prototype.register = function (method, pattern, name, cb) {
-    if (cb !== undefined) {
-        this.nest(pattern, cb);
+Endpoints.prototype.root = '';
+Endpoints.prototype.endpoints = {};
+
+Endpoints.prototype.register = function (method, pattern, name, defaults, cb) {
+    let callback = determineCallback(defaults, cb);
+    defaults = (typeof defaults == 'object' && defaults.constructor == Object) ? defaults : {};
+
+    if (callback) {
+        this.nest(pattern, callback);
     }
 
     this.endpoints[name] = {
         method: method,
-        pattern: prefixPattern(this.root, pattern)
+        pattern: prefixPattern(this.root, pattern),
+        defaults: defaults
     };
 };
 
@@ -82,10 +93,11 @@ Endpoints.prototype.blueprint = function (name) {
 }
 
 Endpoints.prototype.resolve = function (name, parameters) {
-    var details = this.blueprint(name);
-    details.path = resolveParameters(details.pattern, parameters);
+    var route = this.blueprint(name);
+    console.log(Object.assign({}, route.defaults, parameters));
+    let path = resolveParameters(route.pattern, Object.assign({}, route.defaults, parameters));
 
-    return details;
+    return Object.assign({}, route, {path});
 };
 
 Endpoints.prototype.method = function (name) {

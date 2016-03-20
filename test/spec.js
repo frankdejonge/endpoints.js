@@ -21,34 +21,40 @@ describe('@frankdejonge/endpoints', function () {
         var method = testCase[0], httpMethod = testCase[1];
         describe('when a '+httpMethod+' route is registered', function () {
             beforeEach(function () {
-                sut[method].apply(sut, ['/segment/:param', 'name']);
+                sut[method].apply(sut, ['/segment/:param', 'route_with_parameter']);
+                sut[method].apply(sut, ['/segment/:param', 'route_with_defaults', {param: 'default'}]);
             });
 
             it('should resolve a url', function () {
-                expect(sut.path('name', {param: 'replaced'})).to.equal('/segment/replaced');
+                expect(sut.path('route_with_parameter', {param: 'replaced'})).to.equal('/segment/replaced');
+            });
+
+            it('should resolve a url using defaults', function () {
+                console.log(sut.blueprint('route_with_defaults'));
+                // expect(sut.path('route_with_defaults')).to.equal('/segment/default');
             });
 
             it('should know which method the endpoint has', function () {
-                expect(sut.method('name')).to.equal(httpMethod);
+                expect(sut.method('route_with_parameter')).to.equal(httpMethod);
             });
 
             it('should expose the endpoint\'s pattern', function () {
-                expect(sut.pattern('name')).to.equal('/segment/:param');
+                expect(sut.pattern('route_with_parameter')).to.equal('/segment/:param');
             });
 
             it('should expose the blueprint for an endpoint', function () {
-                expect(sut.blueprint('name', {param: 'replaced'})).to.eql({
+                expect(sut.blueprint('route_with_parameter', {param: 'replaced'})).to.eql({
                     method: httpMethod,
                     pattern: '/segment/:param',
-                    name: 'name'
+                    name: 'route_with_parameter'
                 });
             });
 
             it('should give resolve information about an endpoint', function () {
-                expect(sut.resolve('name', {param: 'replaced'})).to.eql({
+                expect(sut.resolve('route_with_parameter', {param: 'replaced'})).to.eql({
                     method: httpMethod,
                     pattern: '/segment/:param',
-                    name: 'name',
+                    name: 'route_with_parameter',
                     path: '/segment/replaced'
                 });
             });
