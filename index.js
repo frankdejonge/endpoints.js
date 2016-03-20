@@ -97,7 +97,7 @@ Endpoints.prototype.resolve = function (name, parameters) {
     console.log(Object.assign({}, route.defaults, parameters));
     var path = resolveParameters(route.pattern, Object.assign({}, route.defaults, parameters));
 
-    return Object.assign({}, route, {path});
+    return Object.assign({}, route, {path: path});
 };
 
 Endpoints.prototype.method = function (name) {
