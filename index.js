@@ -96,7 +96,6 @@ Endpoints.prototype.blueprint = function (name) {
 
 Endpoints.prototype.resolve = function (name, parameters) {
     var route = this.blueprint(name);
-    console.log(assign({}, route.defaults, parameters));
     var path = resolveParameters(route.pattern, assign({}, route.defaults, parameters));
 
     return assign({}, route, {path: path});
