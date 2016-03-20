@@ -36,7 +36,7 @@ Endpoints.prototype.root = '';
 Endpoints.prototype.endpoints = {};
 
 Endpoints.prototype.register = function (method, pattern, name, defaults, cb) {
-    let callback = determineCallback(defaults, cb);
+    var callback = determineCallback(defaults, cb);
     defaults = (typeof defaults == 'object' && defaults.constructor == Object) ? defaults : {};
 
     if (callback) {
@@ -95,7 +95,7 @@ Endpoints.prototype.blueprint = function (name) {
 Endpoints.prototype.resolve = function (name, parameters) {
     var route = this.blueprint(name);
     console.log(Object.assign({}, route.defaults, parameters));
-    let path = resolveParameters(route.pattern, Object.assign({}, route.defaults, parameters));
+    var path = resolveParameters(route.pattern, Object.assign({}, route.defaults, parameters));
 
     return Object.assign({}, route, {path});
 };
